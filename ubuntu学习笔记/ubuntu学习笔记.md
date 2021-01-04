@@ -92,6 +92,32 @@ aarch64就是ARM架构；X84_64就是x64架构；mips就是MIP架构。
 
 2)
 
+
+
+### Wireshark抓包工具的安装
+
+```
+1、安装
+sudo apt-get install wireshark
+2、执行
+sudo wireshark
+```
+
+在ubuntu上安装wireshark之后提示Couldn't run /usr/bin/dumpcap in child process:权限不够
+
+```
+sudo apt-get install libcap2-bin wireshark
+sudo chgrp xxxxxxx /usr/bin/dumpcap
+sudo chmod 750 /usr/bin/dumpcap
+sudo setcap cap_net_raw,cap_net_admin+eip /usr/bin/dumpcap
+3、使用
+tcp dst port 433:显示目的TCP端口为443的封包
+ip src host 192.168.0.1:显示来源IP地址为192.168.0.1的封包
+host 192.168.0.1:显示目的或来源IP地址为192.168.0.1的封包
+src portrange:1000-2000:显示来源为TCP或UDP，且端口为1000-2000范围内的封包
+not icmp:显示除了icmp以外的所有封包
+```
+
 ------
 
 
@@ -158,3 +184,10 @@ OK，到此我们就轻松愉快的解决了这个问题。（Yeah!）
 from tensorflow.python.client import device_lib
 print(device_lib.list_local_devices())
 ```
+
+
+
+# 查看网络端口进程
+
+netstat -uap
+
