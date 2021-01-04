@@ -1,0 +1,333 @@
+python学习笔记
+
+[TOC]
+
+# 
+
+## argparse模块
+
+`import argparse`
+
+argparse是一个Python模块：命令行选项、参数和子命令解析器。
+主要有三个步骤：
+创建 ArgumentParser() 对象
+调用 add_argument() 方法添加参数
+使用 parse_args() 解析添加的参数
+
+1)创建解析器
+
+`parser = argparse.ArgumentParser(description='Process some integers.')`
+
+使用 argparse 的第一步是创建一个 ArgumentParser 对象。
+ArgumentParser 对象包含将命令行解析成 Python 数据类型所需的全部信息。
+
+2）添加参数
+
+`parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')`
+
+3）解析参数
+
+`>>> parser.parse_args(['--sum', '7', '-1', '42']) `
+
+`Namespace(accumulate=<built-in function sum>, integers=[7, -1, 42])`
+
+### ArgumentParser 对象
+
+`class argparse.ArgumentParser(prog=None, usage=None, description=None, epilog=None, parents=[], formatter_class=argparse.HelpFormatter, prefix_chars='-', fromfile_prefix_chars=None, argument_default=None, conflict_handler='error', add_help=True, allow_abbrev=True)`
+
+prog - 程序的名称（默认：sys.argv[0]）
+usage - 描述程序用途的字符串（默认值：从添加到解析器的参数生成）
+description - 在参数帮助文档之前显示的文本（默认值：无）
+epilog - 在参数帮助文档之后显示的文本（默认值：无）
+parents - 一个 ArgumentParser 对象的列表，它们的参数也应包含在内
+formatter_class - 用于自定义帮助文档输出格式的类
+prefix_chars - 可选参数的前缀字符集合（默认值：’-’）
+fromfile_prefix_chars - 当需要从文件中读取其他参数时，用于标识文件名的前缀字符集合（默认值：None）
+argument_default - 参数的全局默认值（默认值： None）
+conflict_handler - 解决冲突选项的策略（通常是不必要的）
+add_help - 为解析器添加一个 -h/–help 选项（默认值： True）
+allow_abbrev - 如果缩写是无歧义的，则允许缩写长选项 （默认值：True）
+
+### add_argument() 方法
+
+`ArgumentParser.add_argument(name or flags...[, action][, nargs][, const][, default][, type][, choices][, required][, help][, metavar][, dest])`
+
+name or flags - 一个命名或者一个选项字符串的列表，例如 foo 或 -f, --foo。
+action - 当参数在命令行中出现时使用的动作基本类型。
+nargs - 命令行参数应当消耗的数目。
+const - 被一些 action 和 nargs 选择所需求的常数。
+default - 当参数未在命令行中出现时使用的值。
+type - 命令行参数应当被转换成的类型。
+choices - 可用的参数的容器。
+required - 此命令行选项是否可省略 （仅选项可用）。
+help - 一个此选项作用的简单描述。
+metavar - 在使用方法消息中使用的参数值示例。
+dest - 被添加到 parse_args() 所返回对象上的属性名。
+
+- 示例
+
+计算一个数的平方
+
+`import argparse`
+
+`parser = argparse.ArgumentParser()`
+`parser.add_argument("square", help="display a square of a given number", type=int)`
+`args = parser.parse_args()`
+`print(args.square**2)`
+
+将上面的代码保存为文件 argparse_usage.py，在终端运行，结果如下：
+
+`$ python argparse_usage.py 9
+81`
+
+
+
+## importlib 模块
+
+`import importlib`
+
+### importlib.import_module
+
+- 示例
+
+文件结构
+
+`├── clazz`
+`│   ├── __init__.py`
+`│   ├── a.py`
+`│   └── b.py`
+`└── main.py`
+
+a.py的代码
+
+`def show():
+    print("show A")`
+
+b.py的代码
+
+`def show():
+    print("show A")`
+
+从main中导入clazz包中的a和b模块
+
+main.py
+
+`import importlib`
+
+`# 绝对导入`
+`a = importlib.import_module("clazz.a")`
+`a.show()`
+`# show A`
+
+`# 相对导入`
+`b = importlib.import_module(".b", "clazz")`
+`b.show()`
+
+`# show B`
+
+
+
+## OS模块
+
+`import os`
+
+### os.path
+
+此时sys.path 返回的是一个列表！
+
+#### os.path.dirname(__file__)
+
+返回脚本的路径，但是需要注意一下几点:
+
+1、必须是实际存在的.py文件，如果在命令行执行，则会引发异常NameError: name '__file__' is not defined
+
+2、在运行的时候如果输入完整的执行的路径，则返回.py文件的全路径如：
+
+`python c:/test/test.py` 则返回路径 c:/test ；如果是`python test.py` 则返回空
+
+3、结合os.path.abspath用
+
+`os.path.dirname(os.path.abspath(__file__))`
+
+`os.path.abspath(__file__)`返回的是.py文件的绝对路径
+
+#### os.path.append(path)
+
+使用sys.path.append()方法可以临时添加搜索路径，方便更简洁的import其他包和模块。这种方法导入的路径会在python程序退出后失效。
+
+#### os.path.join()
+
+连接两个或更多的路径名组件
+
+1.如果各组件名首字母不包含’/’，则函数会自动加上
+
+2.如果有一个组件是一个绝对路径，则在它之前的所有组件均会被舍弃
+
+3.如果最后一个组件为空，则生成的路径以一个’/’分隔符结尾
+
+- 示例
+
+`import os`
+
+`Path1 = 'home'`
+`Path2 = '/develop'`
+`Parth3 = 'develop'`
+`Path4= 'code'`
+
+`Path10 = Path1 + Path2 + Path4`
+`Path20 = os.path.join(Path1,Path2,Path4)`
+`Path30 = os.path.join(Path1,Path3,Path4)`
+`print ('Path10 = ',Path10)`
+`print ('Path20 = ',Path20)` 
+`print ('Path30 = ',Path30)` 
+
+output:
+
+Path10 = home/developcode
+Path20 = /develop/code
+Path30 = home/develop/code
+
+#### os.path.exists(path)
+
+判断路径是否存在
+
+### os.mkdir(path)
+
+创建路径，一般配合os.path.exists(path)使用
+
+- 示例
+
+`if not os.path.exists(path):`
+
+`os.mkdir(path)`
+
+### os.system('string')
+
+system函数可以将字符串转化成命令在服务器上运行；其原理是每一条system函数执行时，其会创建一个子进程在系统上执行命令行，子进程的执行结果无法影响主进程；
+
+`import os` 
+
+`os.system('cd /usr/local')` 
+
+`os.mkdir('aaa.txt)`
+
+上述程序运行后会发现txt文件并没有创建在/usr/local文件夹下，而是在当前的目录下。
+
+使用system执行多条命令
+
+`import os` 
+
+`os.system('cd /usr/local && mkdir aaa.txt')` 
+
+`# 或者` 
+
+`#os.system('cd /usr/local ; mkdir aaa.txt')`
+
+- 示例
+
+`os.system('cp %s %s' % (MODEL_FILE, LOG_DIR))`
+
+
+
+## open()函数
+
+python open() 函数用于打开一个文件，创建一个 **file** 对象
+
+`open(name[, mode[, buffering]])`
+
+name : 一个包含了你要访问的文件名称的字符串值。
+
+mode : mode 决定了打开文件的模式：只读，写入，追加等。所有可取值见如下的完全列表。这个参数是非强制的，默认文件访问模式为只读(r)。
+
+buffering : 如果 buffering 的值被设为 0，就不会有寄存。如果 buffering 的值取 1，访问文件时会寄存行。如果将 buffering 的值设为大于 1 的整数，表明了这就是的寄存区的缓冲大小。如果取负值，寄存区的缓冲大小则为系统默认。
+
+不同模式打开文件的完全列表：
+
+| 模式 | 描述                                                         |
+| ---- | ------------------------------------------------------------ |
+| r    | 以只读方式打开文件。文件的指针将会放在文件的开头。这是默认模式。 |
+| rb   | 以二进制格式打开一个文件用于只读。文件指针将会放在文件的开头。这是默认模式。 |
+| r+   | 打开一个文件用于读写。文件指针将会放在文件的开头。           |
+| rb+  | 以二进制格式打开一个文件用于读写。文件指针将会放在文件的开头。 |
+| w    | 打开一个文件只用于写入。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件。 |
+| wb   | 以二进制格式打开一个文件只用于写入。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件。 |
+| w+   | 打开一个文件用于读写。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件。 |
+| wb+  | 以二进制格式打开一个文件用于读写。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件。 |
+|a|打开一个文件用于追加。如果该文件已存在，文件指针将会放在文件的结尾。也就是说，新的内容将会被写入到已有内容之后。如果该文件不存在，创建新文件进行写入。|
+|ab|以二进制格式打开一个文件用于追加。如果该文件已存在，文件指针将会放在文件的结尾。也就是说，新的内容将会被写入到已有内容之后。如果该文件不存在，创建新文件进行写入。|
+|a+|打开一个文件用于读写。如果该文件已存在，文件指针将会放在文件的结尾。文件打开时会是追加模式。如果该文件不存在，创建新文件用于读写。|
+|ab+|以二进制格式打开一个文件用于追加。如果该文件已存在，文件指针将会放在文件的结尾。如果该文件不存在，创建新文件用于读写。|
+
+### file对象方法
+
+**file.read([size])**：size 未指定则返回整个文件，如果文件大小 >2 倍内存则有问题，f.read()读到文件尾时返回""(空字串)。
+
+**file.readline()**：返回一行。
+
+**file.readlines([size])** ：返回包含size行的列表, size 未指定则返回全部行。
+
+**for line in f: print line** ：通过迭代器访问。
+
+**f.write("hello\n")**：如果要写入字符串以外的数据,先将他转换为字符串。
+
+**f.tell()**：返回一个整数,表示当前文件指针的位置(就是到文件头的字节数)。
+
+**f.seek(偏移量,[起始位置])**：用来移动文件指针。
+
+​	偏移量: 单位为字节，可正可负
+
+​	起始位置: 0 - 文件头, 默认值; 1 - 当前位置; 2 - 文件尾
+
+**f.close()** 关闭文件
+
+
+
+## tensorflow模块
+
+以下简称为tf
+
+### tf.placeholder()
+
+**原型 tf.placeholder(dtype, shape=None, name=None)**
+
+1. dtype：数据类型。常用的是tf.float32,tf.float64等数值类型
+2. shape：数据形状。默认是None，就是一维值，也可以是多维（比如[2,3], [None, 3]表示列是3，行不定）
+3. name：名称
+
+#### 为什么要用placeholder？
+
+​    Tensorflow的设计理念称之为计算流图，在编写程序时，首先构筑整个系统的graph，代码并不会直接生效，这一点和python的其他数值计算库（如Numpy等）不同，graph为静态的，类似于docker中的镜像。然后，在实际的运行时，启动一个session，程序才会真正的运行。这样做的好处就是：避免反复地切换底层程序实际运行的上下文，tensorflow帮你优化整个系统的代码。我们知道，很多python程序的底层为C语言或者其他语言，执行一行脚本，就要切换一次，是有成本的，tensorflow通过计算流图的方式，帮你优化整个session需要执行的代码，还是很有优势的。
+
+​    所以placeholder()函数是在神经网络构建graph的时候在模型中的占位，此时并没有把要输入的数据传入模型，它只会分配必要的内存。等建立session，在会话中，运行模型的时候通过feed_dict()函数向占位符喂入数据。
+
+- **示例**
+
+  `import tensorflow as tf`
+  `import numpy as np`
+
+  `x = tf.placeholder(tf.float32, shape=(1024, 1024))`
+  `y = tf.matmul(x, x)`
+
+  `with tf.Session() as sess:`
+      `#print(sess.run(y))  # ERROR:此处x还没有赋值`
+      `rand_array = np.random.rand(1024, 1024)`
+      `print(sess.run(y, feed_dict={x: rand_array})`) 
+
+### tf.train()
+
+#### tf.train.exponential_decay()
+
+在Tensorflow中，为解决设定学习率(learning rate)问题，提供了指数衰减法来解决。
+
+通过tf.train.exponential_decay函数实现指数衰减学习率。
+
+**原型 tf.train.exponential_decay(learning_rate, global_steps, decay_steps, decay_rate, staircase=True/False)**
+
+`decayed_learning_rate = learning_rate * decay_rate ^ (global_step / decay_steps)`
+
+### tf.matmul()
+
+torch.matmul是tensor的乘法，输入可以是高维的。
+当输入是都是二维时，就是普通的矩阵乘法，和tensor.mm函数用法相同
+
+当输入有多维时，把多出的一维作为batch提出来，其他部分做矩阵乘法。
