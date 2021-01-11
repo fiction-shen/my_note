@@ -144,7 +144,7 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 
 无法连接NVIDIA驱动：NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver
 
-#### NVIDIA-SMI has failed because it couldn’t communicate with the NVIDIA driver
+## NVIDIA-SMI has failed because it couldn’t communicate with the NVIDIA driver
 
 重启服务器之后就出现连接不上NVIDIA驱动的情况。这个时候tensorflow还是可以运行的，但只是在用cpu跑。安装gpu版的TensorFlow时，也显示已安装。
 
